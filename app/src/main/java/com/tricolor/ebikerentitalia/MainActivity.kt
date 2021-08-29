@@ -32,67 +32,84 @@ class MainActivity : AppCompatActivity() {
     private var username: EditText? = null
     private var password: EditText? = null
 
-    private lateinit var auth: FirebaseAuth
+    private var auth: FirebaseAuth = Firebase.auth
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        val shared = getSharedPreferences("userdata", MODE_PRIVATE)
+
+        if(shared.contains("user") && shared.contains("pass")) {
+            login(shared.getString("user", "").toString(), shared.getString("pass", "").toString())
+        }
+        else {
+            setContentView(R.layout.fragment_login)
+
+            loginButton = findViewById(R.id.login)
+            username = findViewById(R.id.username)
+            password = findViewById(R.id.password)
+
+            loginButton?.setOnClickListener {
+                val user = if(username?.text.toString() != "") username?.text.toString() else " "
+                val pass = if(password?.text.toString() != "") password?.text.toString() else " "
+
+                login(user, pass)
+            }
+        }
+    }
+
+    fun login(user: String, pass: String) {
         auth = Firebase.auth
+        auth.signInWithEmailAndPassword(user, pass).addOnCompleteListener { task ->
+            if (task.isSuccessful) {
+                // Save user login data
+                val shared = getSharedPreferences("userdata", MODE_PRIVATE)
+                val editor = shared.edit()
 
-        setContentView(R.layout.fragment_login)
-
-
-        loginButton = findViewById(R.id.login)
-        username   = findViewById(R.id.username)
-        password   = findViewById(R.id.password)
-
-        loginButton?.setOnClickListener {
-            var un = username?.text.toString()
-            var pwd = password?.text.toString()
-
-            if(un == "")
-                un = " "
-            if(pwd == "")
-                pwd = " "
-
-            auth.signInWithEmailAndPassword(un, pwd).addOnCompleteListener { task ->
-                if (task.isSuccessful) {
-                    // Sign in success, update UI with the signed-in user's information
-                    Log.d(TAG, "signInWithEmail:success")
-                    val user = auth.currentUser
-                    setContentView(R.layout.activity_main)
-                    val toolbar: Toolbar = findViewById(R.id.toolbar)
-                    setSupportActionBar(toolbar)
-                    actionBar?.setDisplayHomeAsUpEnabled(true)
-
-                    val fab: FloatingActionButton = findViewById(R.id.fab)
-                    fab.setOnClickListener { view ->
-                        Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                            .setAction("Action", null).show()
-                    }
-
-                    val drawerLayout: DrawerLayout = findViewById(R.id.drawer_layout)
-                    val navView: NavigationView = findViewById(R.id.nav_view)
-                    val navController = findNavController(R.id.nav_host_fragment)
-                    // Passing each menu ID as a set of Ids because each
-                    // menu should be considered as top level destinations.
-                    appBarConfiguration = AppBarConfiguration(
-                        setOf(
-                            R.id.nav_home, R.id.nav_gallery, R.id.nav_slideshow
-                        ), drawerLayout
-                    )
-                    setupActionBarWithNavController(navController, appBarConfiguration)
-                    navView.setupWithNavController(navController)
-
-
-                } else {
-                    // If sign in fails, display a message to the user.
-                    Log.w(TAG, "signInWithEmail:failure", task.exception)
-                    Toast.makeText(
-                        baseContext, "Autenticazione fallita. Riprova",
-                        Toast.LENGTH_SHORT
-                    ).show()
-
+                if (!shared.contains("user") || !shared.contains("pass")) {
+                    Log.d("LOGIN", "saving...")
+                    editor.putString("user", user)
+                    editor.putString("pass", pass)
+                    editor.apply()
                 }
+
+                // remove data from shared preferences
+                /*editor.clear()
+                editor.apply()*/
+
+                // Sign in success, update UI with the signed-in user's information
+                Log.d(TAG, "signInWithEmail:success")
+                //val user = auth.currentUser
+                setContentView(R.layout.activity_main)
+                val toolbar: Toolbar = findViewById(R.id.toolbar)
+                setSupportActionBar(toolbar)
+                actionBar?.setDisplayHomeAsUpEnabled(true)
+
+                val fab: FloatingActionButton = findViewById(R.id.fab)
+                fab.setOnClickListener { view ->
+                    Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
+                        .setAction("Action", null).show()
+                }
+
+                val drawerLayout: DrawerLayout = findViewById(R.id.drawer_layout)
+                val navView: NavigationView = findViewById(R.id.nav_view)
+                val navController = findNavController(R.id.nav_host_fragment)
+                // Passing each menu ID as a set of Ids because each
+                // menu should be considered as top level destinations.
+                appBarConfiguration = AppBarConfiguration(
+                    setOf(
+                        R.id.nav_home, R.id.nav_gallery, R.id.nav_slideshow
+                    ), drawerLayout
+                )
+                setupActionBarWithNavController(navController, appBarConfiguration)
+                navView.setupWithNavController(navController)
+            } else {
+                // If sign in fails, display a message to the user.
+                Log.w(TAG, "signInWithEmail:failure", task.exception)
+                Toast.makeText(
+                    baseContext, "Autenticazione fallita. Riprova",
+                    Toast.LENGTH_SHORT
+                ).show()
             }
         }
     }
@@ -107,6 +124,4 @@ class MainActivity : AppCompatActivity() {
         val navController = findNavController(R.id.nav_host_fragment)
         return navController.navigateUp(appBarConfiguration) || super.onSupportNavigateUp()
     }
-
-
 }
