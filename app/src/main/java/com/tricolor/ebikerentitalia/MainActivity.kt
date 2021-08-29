@@ -46,8 +46,13 @@ class MainActivity : AppCompatActivity() {
         password   = findViewById(R.id.password)
 
         loginButton?.setOnClickListener {
-            val un = username?.text.toString()
-            val pwd = password?.text.toString()
+            var un = username?.text.toString()
+            var pwd = password?.text.toString()
+
+            if(un == "")
+                un = " "
+            if(pwd == "")
+                pwd = " "
 
             auth.signInWithEmailAndPassword(un, pwd).addOnCompleteListener { task ->
                 if (task.isSuccessful) {
