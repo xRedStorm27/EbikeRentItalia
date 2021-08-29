@@ -13,6 +13,7 @@
     <!-- Strings related to login -->
     <string name="prompt_email">Email</string>
     <string name="prompt_password">Password</string>
+    <string name="prompt_confirm_password">Conferma password</string>
     <string name="action_sign_in">Accedi</string>
     <string name="action_sign_in_short">Sign in</string>
     <string name="welcome">"Benvenuto!"</string>
@@ -21,4 +22,5 @@
     <string name="login_failed">"Login failed"</string>
     <string name="new_button">Tasto da personalizzare</string>
     <string name="signup_button"><u>Nuovo utente? \nClicca qui per registrarti!</u></string>
+    <string name="login_button"><u>Già registrato? \nClicca qui per accedere!</u></string>
 </resources>
