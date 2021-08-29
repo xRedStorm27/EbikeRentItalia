@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css"
+          integrity="sha512-xodZBNTC5n17Xt2atTPuE1HxjVMSvLVW9ocqUKLsCC5CXdbqCmblAshOMAS6/keqq/sMZMZ19scR4PsZChSR7A=="
+          crossorigin=""/>
+    <!--<link rel="stylesheet" href="https://opengeo.tech/maps/leaflet-search/src/leaflet-search.css">-->
+    <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"
+            integrity="sha512-XQoYMqMTK8LvdxXYG3nZ448hOEQiglfqkJs1NOQV44cWnUrBc8PkAOcXy20w0vlaXaVUearIOBhiXZ5V3ynxwA=="
+            crossorigin=""></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <!--<script src="https://opengeo.tech/maps/leaflet-search/src/leaflet-search.js"></script>-->
+    <style>
+        #mapid
+        {
+            height: 20hv;
+            position: absolute;
+            top: 0;
+            bottom: 0;
+            width: 100%;
+        }
+    </style>
+</head>
+<body>
+    <div id="mapid"></div>
+
+</body>
+<script>
+    /*Access-Control-Allow-Origin: *
+
+    $.ajax({
+    url: 'http://192.168.1.167/geodata.php',
+    dataType: 'json',
+    success: function(response){
+        // here you handle the response from server.
+        // you can access the data returned doing something like:
+        var id = response.id;
+        console.log(id)
+    }
+    });*/
+
+	var mymap = L.map('mapid').setView([45.872836, 8.921109], 20);
+
+	L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+		maxZoom: 18,
+		attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors, ' +
+			'Imagery © <a href="https://www.mapbox.com/">Mapbox</a>',
+		id: 'mapbox/streets-v11',
+		tileSize: 512,
+		zoomOffset: -1
+	}).addTo(mymap);
+
+    var searchLayer = L.layerGroup().addTo(mymap);
+
+    //mymap.addControl( new L.Control.Search({layer: searchLayer}) );
+
+    var marker = L.marker([45.87223705309349, 8.922213128563246]).addTo(mymap);
+        marker.bindPopup("<b>Orsa Bike&Life</b><br>Saltrio").openPopup();
+
+
+</script>
+</html>

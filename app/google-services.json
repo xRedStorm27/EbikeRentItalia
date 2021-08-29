@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "447544317085",
+    "project_id": "ebike-rent-italia",
+    "storage_bucket": "ebike-rent-italia.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:447544317085:android:a4f690a6bd97e1cf32b074",
+        "android_client_info": {
+          "package_name": "com.tricolor.ebikerentitalia"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "447544317085-ob3d9c3r9eh1agnfe0tr7gujocfuofes.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAm8bo7r17qyGF4tDLBFg5thq3GE7HlkuA"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "447544317085-ob3d9c3r9eh1agnfe0tr7gujocfuofes.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
