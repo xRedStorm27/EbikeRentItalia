@@ -26,4 +26,9 @@
         android:layout_height="match_parent"
         app:layout_constraintTop_toTopOf="parent"
         tools:layout_editor_absoluteX="0dp" />
+    <!--<org.osmdroid.views.MapView
+        android:id="@+id/home_map"
+        tilesource="Mapnik"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"/>-->
 </androidx.constraintlayout.widget.ConstraintLayout>

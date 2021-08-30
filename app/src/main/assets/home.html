@@ -4,12 +4,18 @@
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css"
           integrity="sha512-xodZBNTC5n17Xt2atTPuE1HxjVMSvLVW9ocqUKLsCC5CXdbqCmblAshOMAS6/keqq/sMZMZ19scR4PsZChSR7A=="
           crossorigin=""/>
-    <!--<link rel="stylesheet" href="https://opengeo.tech/maps/leaflet-search/src/leaflet-search.css">-->
+    <link rel="stylesheet" href="https://opengeo.tech/maps/leaflet-search/src/leaflet-search.css">
+
+    <link rel='stylesheet' href='https://cdn-geoweb.s3.amazonaws.com/esri-leaflet-geocoder/0.0.1-beta.5/esri-leaflet-geocoder.css'></link>
     <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"
             integrity="sha512-XQoYMqMTK8LvdxXYG3nZ448hOEQiglfqkJs1NOQV44cWnUrBc8PkAOcXy20w0vlaXaVUearIOBhiXZ5V3ynxwA=="
             crossorigin=""></script>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-    <!--<script src="https://opengeo.tech/maps/leaflet-search/src/leaflet-search.js"></script>-->
+    <script src="https://opengeo.tech/maps/leaflet-search/src/leaflet-search.js"></script>
+
+    <script src='https://cdn-geoweb.s3.amazonaws.com/esri-leaflet/0.0.1-beta.5/esri-leaflet.js'></script>
+    <script src='https://cdn-geoweb.s3.amazonaws.com/esri-leaflet-geocoder/0.0.1-beta.5/esri-leaflet-geocoder.js'></script>
+
     <style>
         #mapid
         {
@@ -19,25 +25,47 @@
             bottom: 0;
             width: 100%;
         }
+
+		.legend {
+			padding: 6px 8px;
+			font: 14px Arial, Helvetica, sans-serif;
+			background: white;
+			background: rgba(255, 255, 255, 0.8);
+			box-shadow: 0 0 15px rgba(0, 0, 0, 0.2);
+			line-height: 24px;
+			color: #555;
+		}
+		.legend h4 {
+			text-align: center;
+			font-size: 16px;
+			margin: 2px 12px 8px;
+			color: #777;
+		}
+
+		.legend span {
+			position: relative;
+			bottom: 3px;
+		}
+
+		.legend i {
+			width: 18px;
+			height: 20px;
+			float: left;
+			margin: 0 7px 0 0;
+			opacity: 0.9;
+		}	
+
+		.legend i.icon {
+			background-size: 15px;
+			background-color: rgba(255, 255, 255, 1);
+		}
     </style>
 </head>
 <body>
-    <div id="mapid"></div>
+<div id="mapid"></div>
 
 </body>
 <script>
-    /*Access-Control-Allow-Origin: *
-
-    $.ajax({
-    url: 'http://192.168.1.167/geodata.php',
-    dataType: 'json',
-    success: function(response){
-        // here you handle the response from server.
-        // you can access the data returned doing something like:
-        var id = response.id;
-        console.log(id)
-    }
-    });*/
 
 	var mymap = L.map('mapid').setView([45.872836, 8.921109], 20);
 
@@ -50,13 +78,78 @@
 		zoomOffset: -1
 	}).addTo(mymap);
 
-    var searchLayer = L.layerGroup().addTo(mymap);
+    //var searchLayer = L.layerGroup().addTo(mymap);
+
+var LeafIcon = L.Icon.extend({
+    options: {
+        iconSize:     [25, 41],
+        //shadowSize:   [50, 64],
+        iconAnchor:   [12, 41],
+        //shadowAnchor: [4, 62],
+        popupAnchor:  [1, -34]
+    }
+});
+var blueIcon = new LeafIcon({iconUrl: 'marker/blue_marker.png'}),
+    redIcon = new LeafIcon({iconUrl: 'marker/red_marker.png'});
+
 
     //mymap.addControl( new L.Control.Search({layer: searchLayer}) );
+	var searchControl = new L.esri.Controls.Geosearch().addTo(mymap);
+	var results = new L.LayerGroup().addTo(mymap);
 
-    var marker = L.marker([45.87223705309349, 8.922213128563246]).addTo(mymap);
-        marker.bindPopup("<b>Orsa Bike&Life</b><br>Saltrio").openPopup();
+  /*searchControl.on('results', function(data){
+    results.clearLayers();
+    for (var i = data.results.length - 1; i >= 0; i--) {
+      //results.addLayer(L.marker(data.results[i].latlng));
+    }
+  });*/
 
+//LEGENDA
+
+  var legend = L.control({ position: "bottomleft" });
+
+legend.onAdd = function(mymap) {
+  var div = L.DomUtil.create("div", "legend");
+  div.innerHTML += "<h4>Legenda</h4>";
+  div.innerHTML += '<i class="icon" style="background-image: url(marker/blue_marker.png);background-repeat: no-repeat;"></i><span>Noleggio E-Bike</span><br>';
+  div.innerHTML += '<i class="icon" style="background-image: url(marker/red_marker.png);background-repeat: no-repeat;"></i><span>Ristorante</span><br><br>';
+
+
+
+  return div;
+};
+
+legend.addTo(mymap);
+
+//AGGIUNTA MARKERS DAL DB
+
+	/*$.ajax({
+    url: 'geodata.php',
+    dataType: 'json',
+    success: function(response){
+        // here you handle the response from server.
+        // you can access the data returned doing something like:
+		let iconc;
+		for(let i = 0; i < response.length; i++) {
+			switch(response[i].Categoria.toString()) {
+				case "0":
+					iconc = blueIcon;
+				break;
+				case "1":
+					iconc = redIcon;
+				break;
+			}
+			var marker = L.marker([response[i].CoordX, response[i].CoordY], {icon: iconc}).addTo(mymap);
+			marker.bindPopup("<b>"+response[i].Nome+"</b><br>"+response[i].Luogo);
+		}
+        return response;
+		}
+    });*/
+
+function createMark(mark) {
+    var marker = L.marker([mark.CoordX, mark.CoordY]).addTo(mymap)
+    marker.bindPopup("<b>"+mark.nome+"<br>"+mark.Luogo+"</br>")
+}
 
 </script>
 </html>

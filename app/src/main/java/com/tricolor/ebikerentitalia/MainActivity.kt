@@ -52,7 +52,6 @@ class MainActivity : AppCompatActivity() {
             loginButton?.setOnClickListener {
                 val user = if(username?.text.toString() != "") username?.text.toString() else " "
                 val pass = if(password?.text.toString() != "") password?.text.toString() else " "
-
                 login(user, pass)
             }
         }
@@ -103,11 +102,12 @@ class MainActivity : AppCompatActivity() {
                 )
                 setupActionBarWithNavController(navController, appBarConfiguration)
                 navView.setupWithNavController(navController)
+
             } else {
                 // If sign in fails, display a message to the user.
                 Log.w(TAG, "signInWithEmail:failure", task.exception)
                 Toast.makeText(
-                    baseContext, "Autenticazione fallita. Riprova",
+                    baseContext, R.string.auth_failed,
                     Toast.LENGTH_SHORT
                 ).show()
             }

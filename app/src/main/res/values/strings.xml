@@ -23,4 +23,5 @@
     <string name="new_button">Tasto da personalizzare</string>
     <string name="signup_button"><u>Nuovo utente? \nClicca qui per registrarti!</u></string>
     <string name="login_button"><u>Già registrato? \nClicca qui per accedere!</u></string>
+    <string name="auth_failed">Autenticazione fallita. Riprova</string>
 </resources>
